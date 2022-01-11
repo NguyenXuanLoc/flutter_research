@@ -33,7 +33,7 @@ class _SplashScreenState extends State<SplashPage> {
           cubit: _bloc,
           listener: (context, state) {
             if (state is GetApiKeyState) {
-              ToastUtils.toast("Load data success");
+              ToastUtils.toast("Load data success: ${state.key.apiKey}");
               NavigatorUtils.navigatorRightToLeft(
                   context: context, goto: HomePage());
             } else if (state is ErrorSplashState) {
