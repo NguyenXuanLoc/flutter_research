@@ -7,7 +7,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   @override
   Stream<HomeState> mapEventToState(HomeEvent event) async* {
-    // TODO: implement mapEventToState
-    throw UnimplementedError();
+    state.runtimeType;
+    switch (event.runtimeType) {
+      case GetNoteEvent:
+        yield GetNoteState(DateTime.now().microsecondsSinceEpoch);
+        break;
+      case SetNoteEvent:
+        yield SetNoteState(time: DateTime.now().microsecondsSinceEpoch);
+        break;
+    }
   }
 }
