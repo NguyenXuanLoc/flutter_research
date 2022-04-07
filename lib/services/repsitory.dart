@@ -37,4 +37,21 @@ class Repository {
       return null;
     }
   }
+  //   void uploadFile(String proofFrontPath, String proofBackPath) async {
+//     print("PATH: $proofBackPath");
+//     var map = {
+//       "proofFront": MultipartFile(proofFrontPath, filename: proofFrontPath.split("/").last),
+//       "proofBack": MultipartFile(proofBackPath, filename: proofBackPath.split("/").last)
+//     };
+//     FormData data = FormData(map);
+//     var response =
+//         await provider.PATCH("u/user_identifications/upload_proof", data);
+//     if (response.error != null) {
+//       print("TAG ERROR: ${response.error}");
+//     } else {
+//       if (response.data != null) {
+//         print("TAG ERROR: ${response.data.toString()}");
+//       }
+//     }
+//   }
 }
