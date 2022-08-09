@@ -63,8 +63,8 @@ class NotificationService {
         await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
     String? payload = notificationAppLaunchDetails!.payload;
     if (payload != null) {
-      await navigatorKey.currentState?.push(
-          MaterialPageRoute(builder: (_) => DetailsPage(payload: payload)));
+     /* await navigatorKey.currentState?.push(
+          MaterialPageRoute(builder: (_) => DetailsPage(payload: payload)));*/
       Fluttertoast.showToast(
         msg: payload,
         toastLength: Toast.LENGTH_SHORT,
@@ -109,6 +109,6 @@ class NotificationService {
 }
 
 Future<void> onSelectNotification(String? payload) async {
-  await navigatorKey.currentState
-      ?.push(MaterialPageRoute(builder: (_) => DetailsPage(payload: payload)));
+/*  await navigatorKey.currentState
+      ?.push(MaterialPageRoute(builder: (_) => DetailsPage(payload: payload)));*/
 }

@@ -1,101 +1,118 @@
-import 'dart:convert';
+import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_research/notification_service.dart';
 import 'package:intl/intl.dart';
+import 'package:otp_text_field/otp_field.dart';
+import 'package:otp_text_field/otp_text_field.dart';
+import 'package:otp_text_field/style.dart';
 
-import 'details_page.dart';
+import 'date_picker_widget.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class MyHomePage extends StatefulWidget {
+  MyHomePage({Key? key, this.title}) : super(key: key);
+  final String? title;
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  NotificationService notificationService = NotificationService();
+class _MyHomePageState extends State<MyHomePage> {
+  var month = DateFormat('MM/yyyy').format(DateTime.now());
+  var datePickerController = DatePickerController();
+  var currentDate = DateTime.now();
+  var dateMove = DateTime.now();
+  var threeDay = 86400000 * 5;
 
-  final int maxTitleLength = 60;
-  TextEditingController _textEditingController =
-      TextEditingController(text: "Business meeting");
-
-  int segmentedControlGroupValue = 0;
-
-  DateTime currentDate = DateTime.now();
-  DateTime? eventDate;
-
-
-  Future<void> onCreate() async {
-    await notificationService.showNotification(
-      0,
-  "Test",
-      "A new event has been created.",
-      jsonEncode({
-        "title": "Title",
-        "eventDate": "OPK",
-        "eventTime": "OKE",
-      }),
-    );
+  @override
+  void initState() {
+    super.initState();
   }
 
-  Future<void> cancelAllNotifications() async {
-    await notificationService.cancelAllNotifications();
+  void moveToLeft() {
+    print("TAG moveToLeft: ${dateMove.day}");
+    dateMove = DateTime.fromMillisecondsSinceEpoch(
+        dateMove.millisecondsSinceEpoch - threeDay);
+    month = DateFormat('MM/yyyy').format(dateMove);
+    setState(() {});
+    datePickerController.animateToDate(dateMove);
+  }
+
+  void moveToRight() {
+    dateMove = DateTime.fromMillisecondsSinceEpoch(
+        dateMove.millisecondsSinceEpoch + threeDay);
+    month = DateFormat('MM/yyyy').format(dateMove);
+    setState(() {});
+    print("TAG moveToRight: ${dateMove.day}");
+    datePickerController.animateToDate(dateMove);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Reminders App"),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => DetailsPage(payload: null),
-                ),
-              );
-            },
-            icon: Icon(Icons.library_books_rounded),
-          ),
-        ],
-      ),
       body: Center(
         child: Column(
-          children: [
-            TextButton(onPressed: () => onCreate(), child: Text('Show notify'))
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              month.toString(),
+              style: TextStyle(fontSize: 20),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                IconButton(
+                    splashRadius: 20,
+                    constraints: BoxConstraints(maxWidth: 30),
+                    onPressed: () {
+                      moveToLeft();
+                      print("TAG onPress");
+                    },
+                    icon: Icon(
+                      Icons.nest_cam_wired_stand_sharp,
+                      size: 20,
+                    )),
+                SizedBox(
+                  width: 5,
+                ),
+                Expanded(
+                  child: DatePicker(
+                    DateTime.now(),
+                    controller: datePickerController,
+                    width: 40,
+                    dayTextStyle: TextStyle(fontSize: 17),
+                    monthTextStyle: TextStyle(fontSize: 17),
+                    dateTextStyle: TextStyle(fontSize: 17),
+                    initialSelectedDate: DateTime.now(),
+                    selectionColor: Colors.grey,
+                    selectedTextColor: Colors.blue,
+                    onDateChange: (date) {
+                      currentDate = date;
+                      month = DateFormat('MM/yyyy').format(date);
+                      setState(() {});
+                    },
+                  ),
+                ),
+                SizedBox(
+                  width: 5,
+                ),
+                IconButton(
+                    splashRadius: 20,
+                    constraints: BoxConstraints(maxWidth: 30),
+                    onPressed: () {
+                      moveToRight();
+                      print("TAG onPress");
+                    },
+                    icon: Icon(
+                      Icons.nest_cam_wired_stand_sharp,
+                      size: 20,
+                    )),
+              ],
+            ),
+
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildCancelAllButton() {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8.0),
-        color: Colors.indigo[100],
-      ),
-      padding: EdgeInsets.symmetric(
-        horizontal: 24.0,
-        vertical: 12.0,
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            "Cancel all the reminders",
-            style: TextStyle(
-              fontSize: 16.0,
-              fontWeight: FontWeight.w500,
-              color: Colors.black87,
-            ),
-          ),
-          Icon(Icons.clear),
-        ],
       ),
     );
   }
